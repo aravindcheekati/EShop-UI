@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Register - EShop</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="./js/env.js"></script>
+    <script src="./js/signup.js"></script>
+</head>
+<body class="bg-slate-50">
+    <main class="w-full h-screen flex flex-col justify-center items-center md:p-0 p-2">
+        <div class="w-full md:w-3/12 h-auto bg-white rounded shadow p-4 space-y-6">
+            <h1 class="font-semibold text-xl text-center text-slate-500">Register Now!</h1>
+            <form class="flex flex-col gap-4" autocomplete="off" onsubmit="onRegisterUser(event)">
+                <input 
+                    type="text" 
+                    placeholder="Fullname"
+                    name="fullname"
+                    class="border p-2 outline-none rounded"
+                    required
+                />
+                <input 
+                    type="email" 
+                    placeholder="Email"
+                    name="email"
+                    class="border p-2 outline-none rounded"
+                    required
+                />
+                <input 
+                    type="password" 
+                    placeholder="Password"
+                    name="password"
+                    class="border p-2 outline-none rounded"
+                    required
+                />
+                <input 
+                    type="number" 
+                    placeholder="Mobile Number"
+                    name="mobile"
+                    class="border p-2 outline-none rounded"
+                    required
+                />
+                <input 
+                    type="text" 
+                    placeholder="Address"
+                    name="address"
+                    class="border p-2 outline-none rounded"
+                    required
+                />
+                <div>
+                    <button type="submit" class="bg-[#FFC107] px-6 py-2 rounded text-white">Register</button>
+                </div>
+                <p>Already have an account? <a href="login.html" class="text-violet-800 font-semibold">Login</a></p>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

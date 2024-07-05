@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Eshop - Admin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+    <script src="../js/env.js"></script>
+</head>
+<body class="font-poppins">
+    <main class="flex gap-2 relative">
+        <aside class="bg-white shadow w-[240px] h-screen fixed left-0 top-0 overflow-y-auto z-index-10" id="adminAside">
+            <div class="bg-slate-50 w-full h-14">
+                <div class="px-4 py-2 flex flex-row justify-start items-center gap-3">
+                    <img src="../images/pic.jpg" alt="" class="w-10 h-10 rounded-full">
+                    <div>
+                        <p class="text-[12px] mb-[-3px] text-slate-400">Welcome Back!</p>
+                        <h3 class="text-md font-semibold text-slate-500" id="adminName"></h3>
+                    </div>
+                </div>
+            </div>
+            <ul class="p-2">
+                <li>
+                    <button onclick="onTap(this, 'products')" class="w-full p-2 text-left border-b hover:bg-[#FFC107] hover:text-white hover:rounded">
+                        <i class="ri-shopping-cart-line mr-2"></i>
+                        Products
+                    </button>
+                </li>
+                <li>
+                    <button onclick="onTap(this, 'customers')" class="w-full p-2 text-left border-b hover:bg-[#FFC107] hover:text-white hover:rounded"><i class="ri-group-line  mr-2"></i>Customers</button>
+                </li>
+                <li>
+                    <button onclick="onTap(this, 'orders')" class="w-full p-2 text-left border-b hover:bg-[#FFC107] hover:text-white hover:rounded"><i class="ri-luggage-cart-line  mr-2"></i>Orders</button>
+                </li>
+                <li>
+                    <button onclick="onTap(this, 'payments')" class="w-full p-2 text-left border-b hover:bg-[#FFC107] hover:text-white hover:rounded"><i class="ri-money-rupee-circle-line mr-2"></i>Payments</button>
+                </li>
+                <li>
+                    <button onclick="logout()" class="w-full p-2 text-left border-b hover:bg-[#FFC107] hover:text-white hover:rounded"><i class="ri-login-box-line mr-2"></i>Logout</button>
+                </li>
+            </ul>
+        </aside>
+        <div class="bg-slate-100 flex-1 min-h-screen ml-[240px]" id="adminWrapper">
+            <header class="w-full h-14 bg-white shadow sticky top-0 z-index-2">
+                <nav class="w-full h-full flex flex-row items-center justify-start px-2 md:px-4 gap-2">
+                    <div>
+                        <button class="hover:bg-[#FFC107] w-8 h-8 rounded-full hover:text-white" onclick="toggleAdminSidebar()"><i class="ri-menu-2-line"></i></button>
+                    </div>
+                    <div class="flex flex-row justify-start items-center gap-2">
+                        <img class="w-5 h-5" src="../images/cart.png" alt="logo">
+                        <h1 class="font-semibold text-xl text-slate-500">EShop</h1>
+                    </div>
+                </nav>
+            </header>
+            <div class="p-4 mt-4">         
+                <!-- Products -->
+                <div id="products" class="tab-data">
+                    <div class="w-full h-14 flex flex-row justify-between items-center">
+                        <span class="text-slate-400 text-lg font-medium">Products</span>
+                        <button class="bg-[#FFC107] px-3 py-1 rounded text-white" onclick="openAddProductForm()"><i class="ri-add-circle-line"></i>Add Product</button>
+                    </div>
+                    <div>
+                        <div class="hidden border h-[400px] flex flex-col items-center justify-center bg-white rounded" id="productsError"></div>
+                    </div>
+                    <!-- products wrapper start -->
+                    <div class="w-full h-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" id="productsWrapper"></div>
+                </div>
+
+                <!-- Add Product -->
+                <div id="addProductTab" class="w-full md:w-10/12 h-screen bg-white fixed top-0 right-0 md:p-16 p-8 shadow overflow-auto hidden">
+                    <div class="w-full flex justify-between items-center">
+                        <div>
+                            <h1 class="text-3xl font-semibold text-slate-500">New Product</h1>
+                            <p class="text-sm text-slate-400 mt-2">Enter product details to publish on website</p>
+                        </div>
+                            <button class="w-8 h-8 rounded-full hover:text-white hover:bg-[#FFC107]" onclick="closeAddProductForm()"><i class="ri-close-large-line"></i></button>
+                    </div>
+                    <div class="my-6">
+                        <form class="w-full grid grid-cols-3 gap-6" onsubmit="onAddProduct(event)">
+                            <div class="col-span-3">
+                                <label class="font-medium">Title</label>
+                                <input type="text" name="title" class="w-full p-2 mt-2 border outline-none rounded" placeholder="Men's Black Tshirt">
+                            </div>
+                            <div>
+                                <label class="font-medium">Quantity</label>
+                                <input type="number" name="quantity" class="w-full p-2 mt-2 border outline-none rounded" placeholder="10">
+                            </div>
+                            <div>
+                                <label class="font-medium">Price</label>
+                                <input type="number" name="price" class="w-full p-2 mt-2 border outline-none rounded" placeholder="499">
+                            </div>
+                            <div>
+                                <label class="font-medium">Discount</label>
+                                <input type="number" name="discount" class="w-full p-2 mt-2 border outline-none rounded" placeholder="15">
+                            </div>
+                            <div class="col-span-1">
+                                <div>
+                                    <label class="font-medium">Brand</label>
+                                    <button onclick="showNewBrandInput()"><i class="ri-edit-box-line"></i></button>
+                                </div>
+                                <div class="flex gap-1 w-full" id="brandInputWrapper"></div>
+                                <select name="brand" id="chooseBrand" class="w-full p-2 mt-2 border outline-none rounded"></select>
+                            </div>
+                            <div class="col-span-2">
+                                <div>
+                                    <label class="font-medium">Category</label>
+                                    <button onclick="showNewCategoryInput()"><i class="ri-edit-box-line"></i></button>
+                                </div>
+                                <div class="flex gap-1 w-full" id="categoryInputWrapper"></div>
+                                <select name="category" id="chooseCategory" class="w-full p-2 mt-2 border outline-none rounded"></select>
+                            </div>
+                            <div class="w-full col-span-3 h-60 mb-10">
+                                <div id="editor"></div>
+                            </div>
+                            <div>
+                                <button type="submit" class="bg-[#FFC107] px-8 py-2 rounded text-white">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Customers -->
+                <div id="customers" class="tab-data hidden">
+                    <div class="w-full h-14 flex flex-row justify-between items-center">
+                        <span class="text-slate-400 text-lg font-medium">Customers</span>
+                    </div>
+                    <div>
+                        <table class="w-full border">
+                            <thead>
+                                <tr class="text-left text-white bg-[#FFC107]">
+                                    <th class="font-medium py-2 pl-3 pr-10">Name</th>
+                                    <th class="font-medium pr-10">Email</th>
+                                    <th class="font-medium pr-10">Mobile</th>
+                                    <th class="font-medium pr-10">Address</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Orders -->
+                <div id="orders" class="tab-data hidden overflow-auto w-full">
+                    <div class="w-full h-14 flex flex-row justify-between items-center">
+                        <span class="text-slate-400 text-lg font-medium">Orders</span>
+                    </div>
+                    <div>
+                        <table class="min-w-max border">
+                            <thead>
+                                <tr class="text-left text-white bg-[#FFC107]">
+                                    <th class="py-2 pl-3 font-medium pr-10">Ordered At</th>
+                                    <th class="font-medium pr-10">Product</th>
+                                    <th class="font-medium pr-10">Price</th>
+                                    <th class="font-medium pr-10">Discount</th>
+                                    <th class="font-medium pr-10">Customer Name</th>
+                                    <th class="font-medium pr-10">Email</th>
+                                    <th class="font-medium pr-10">Mobile</th>
+                                    <th class="font-medium pr-10">Address</th>
+                                    <th class="font-medium pr-10">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Payments -->
+                <div id="payments" class="tab-data hidden">
+                    <div class="w-full h-14 flex flex-row justify-between items-center">
+                        <span class="text-slate-400 text-lg font-medium">Payments</span>
+                    </div>
+                    <div>
+                        <table class="w-full border">
+                            <thead>
+                                <tr class="text-left text-white bg-[#FFC107]">
+                                    <th class="py-2 pl-3 font-medium">Customer Name</th>
+                                    <th class="font-medium">Email</th>
+                                    <th class="font-medium">Mobile</th>
+                                    <th class="font-medium">Address</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-left text-slate-500 bg-white text-[14px]">
+                                    <td class="py-2 pl-3">Aravind</td>
+                                    <td>aravind@gmail.com</td>
+                                    <td>9999999999</td>
+                                    <td>14-73/A/2 Annaram road thorur, mahabubabad 506163</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Thumbnail Loader -->
+                <div class="w-[350px] h-auto shadow rounded fixed right-8 button-8 bg-white p-4 hidden" id="uploader">
+                    <h1 class="font-medium text-slate-500">Uploading..</h1>
+                    <p class="text-[12px] text-slate-600 mt-1" id="fileName"></p>
+                    <div class="w-full h-1 bg-slate-100 rounded mt-2">
+                        <div class="h-full bg-green-500" id="progressBar"></div>
+                    </div>
+                    <div class="text-[10px] text-slate-400 mt-2">
+                        <label id="loadedSize">00:00 MB</label> / <label id="totalSize">00:00 MB</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="./js/index.js"></script>
+</body>
+</html>
